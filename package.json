@@ -9,9 +9,10 @@
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "scripts": {
-    "clean": "rimraf src/*.js* src/*.d.ts",
+    "clean": "rimraf src/*.js* src/*.d.ts *.d.ts",
     "build": "tsc",
     "test": "karma start",
+    "test-watch": "karma start --auto-watch --no-single-run",
     "prepublish": "npm run build",
     "postpublish": "npm run clean",
     "release": "np"

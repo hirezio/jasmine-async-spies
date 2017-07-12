@@ -11,16 +11,18 @@ declare var global: any;
 
 const Reflect = global['Reflect'];
 
-export function createAsyncSpy<T>(ObjectClass: { new (): T, [key: string]: any; }): AsyncSpy<T> {
+export function createAsyncSpy<T>(ObjectClass: { new (...args: any[]): T, [key: string]: any; }): AsyncSpy<T> {
   const proto = ObjectClass.prototype;
+  
   const methodNames = Object.getOwnPropertyNames(proto)
     .filter(methodName => typeof proto[methodName] == 'function'); 
   
   let asyncSpy:any = {};
 
   methodNames.forEach((methodName) => {
-
+    
     let returnTypeClass = Reflect.getMetadata('design:returntype', ObjectClass.prototype, methodName);
+    console.log('methodName', methodName, returnTypeClass);
     if (returnTypeClass === Observable) {
       asyncSpy[methodName] = createObservableSpyFunction(methodName);
     } else if (returnTypeClass === Promise) {
