@@ -1,13 +1,19 @@
 {
   "name": "jasmine-async-spies",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hirezio/jasmine-async-spies"
+  },
   "description": "Async spies for jasmine TypeScript tests",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "scripts": {
-    "clean": "rimraf src/",
-    "build": "webpack",
-    "test": "karma start"
+    "clean": "rimraf src/*.js* src/*.d.ts",
+    "build": "tsc",
+    "test": "karma start",
+    "prepublish": "npm run build",
+    "postpublish": "npm run clean"
   },
   "keywords": [
     "jasmine",
@@ -34,7 +40,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-typescript": "^3.0.4",
     "karma-webpack": "^2.0.3",
-    "np": "2.16.0",
+    "np": "^2.16.0",
     "rimraf": "2.6.1",
     "ts-node": "^3.0.6",
     "typescript": "^2.3.4",

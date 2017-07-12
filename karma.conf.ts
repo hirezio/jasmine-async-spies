@@ -39,11 +39,11 @@ export default function (config:any) {
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
 
-    autoWatch: true,
+    autoWatch: false,
 
     browsers: ['Chrome'],
 
-    singleRun: false,
+    singleRun: true,
 
     concurrency: Infinity
   })
