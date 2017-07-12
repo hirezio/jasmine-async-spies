@@ -1,0 +1,7 @@
+*.ts
+!*.d.ts
+node_modules
+coverage
+**/*.spec*
+*webpack.config.*
+*karma.conf.*
