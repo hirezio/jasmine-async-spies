@@ -13,7 +13,8 @@
     "build": "tsc",
     "test": "karma start",
     "prepublish": "npm run build",
-    "postpublish": "npm run clean"
+    "postpublish": "npm run clean",
+    "release": "np"
   },
   "keywords": [
     "jasmine",
