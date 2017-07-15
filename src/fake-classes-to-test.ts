@@ -5,6 +5,8 @@ import { Observable } from 'rxjs/Observable';
 
 export class FakeClass {
 
+  someProp: number = 1;
+
   syncMethod() {
     return '';
   }

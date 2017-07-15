@@ -11,78 +11,83 @@ let actualResult: any;
 let actualRejection: any;
 
 describe('createAsyncSpy', () => {
-
   Given(() => {
-    fakeClassSpy = createAsyncSpy(FakeClass);
     fakeValue = 'BOOM!';
+    actualResult = null;
   });
-    
-  describe('should be able to return fake sync values', () => {
+  
+  describe('FakeClass', () => {
+
     Given(() => {
-      fakeClassSpy.syncMethod.and.returnValue(fakeValue);
-    });
-    
-    When(() => {
-      actualResult = fakeClassSpy.syncMethod()
-    });
-    
-    Then(() => {
-      expect(actualResult).toBe(fakeValue);
-    });
-  });
-
-  describe('PROMISES', () => {
-    When((done) => {
-      
-      fakeClassSpy.promiseMethod()
-        .then(result => {
-          actualResult = result;
-          done();
-        })
-        .catch(error => {
-          actualRejection = error;
-          done()
-        })
+      fakeClassSpy = createAsyncSpy(FakeClass);
     });
 
-    fdescribe('should be able to fake resolve', () => {
+    describe('should be able to return fake sync values', () => {
       Given(() => {
-        console.log('fakeClassSpy.promiseMethod', fakeClassSpy.promiseMethod.and);
-        fakeClassSpy.promiseMethod.and.resolveWith(fakeValue);
-      });  
+        fakeClassSpy.syncMethod.and.returnValue(fakeValue);
+      });
+
+      When(() => {
+        actualResult = fakeClassSpy.syncMethod()
+      });
+
       Then(() => {
         expect(actualResult).toBe(fakeValue);
       });
     });
 
-    describe('should be able to fake reject', () => {
+    describe('PROMISES', () => {
+      When((done) => {
+
+        fakeClassSpy.promiseMethod()
+          .then(result => {
+            actualResult = result;
+            done();
+          })
+          .catch(error => {
+            actualRejection = error;
+            done()
+          })
+      }); 
+
+      describe('should be able to fake resolve', () => {
+        Given(() => {
+          fakeClassSpy.promiseMethod.and.resolveWith(fakeValue);
+        });
+        Then(() => {
+          expect(actualResult).toBe(fakeValue);
+        });
+      });
+
+      describe('should be able to fake reject', () => {
+        Given(() => {
+          fakeClassSpy.promiseMethod.and.rejectWith(fakeValue);
+        });
+        Then(() => {
+          expect(actualRejection).toBe(fakeValue);
+        });
+      });
+
+    });
+
+    describe('should be able to return fake Observable values', () => {
       Given(() => {
-        fakeClassSpy.promiseMethod.and.rejectWith(fakeValue);
+        fakeClassSpy.observableMethod.and.nextWith(fakeValue);
       });
+
+      When(() => {
+        fakeClassSpy.observableMethod()
+          .subscribe(result => actualResult = result)
+          .unsubscribe();
+      });
+
       Then(() => {
-        expect(actualRejection).toBe(fakeValue);
+        expect(actualResult).toBe(fakeValue);
       });
     });
-    
   });
 
-  describe('should be able to return fake Observable values', () => {
-    Given(() => {
-      fakeClassSpy.observableMethod.and.nextWith(fakeValue);
-    });
-
-    When(() => {
-      fakeClassSpy.observableMethod()
-        .subscribe(result => actualResult = result)
-        .unsubscribe();
-    });
-
-    Then(() => {
-      expect(actualResult).toBe(fakeValue);
-    });
-  });
-
-  xdescribe('should be able to handle child class', () => {
+  describe('should be able to handle child class', () => {
     Given(() => {
       fakeChildClassSpy = createAsyncSpy(FakeChildClass);
     });
@@ -93,6 +98,22 @@ describe('createAsyncSpy', () => {
 
       When(() => {
         fakeChildClassSpy.anotherObservableMethod()
+          .subscribe(result => actualResult = result)
+          .unsubscribe();
+      });
+
+      Then(() => {
+        expect(actualResult).toBe(fakeValue);
+      });
+    });
+
+    describe('should handle parent methods', () => {
+      Given(() => {
+        fakeChildClassSpy.observableMethod.and.nextWith(fakeValue);
+      });
+
+      When(() => {
+        fakeChildClassSpy.observableMethod()
           .subscribe(result => actualResult = result)
           .unsubscribe();
       });
