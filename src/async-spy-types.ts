@@ -1,4 +1,4 @@
-/// <reference path="../node_modules/@types/jasmine/index.d.ts" />
+import 'jasmine';
 
 export type AsyncSpy<T> = T & {
   [k in keyof T]: AsyncSpyFunction;
