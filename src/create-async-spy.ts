@@ -7,7 +7,8 @@ declare var global: any;
 
 const Reflect = global['Reflect'];
 
-export function createAsyncSpy<T>(ObjectClass: { new (...args: any[]): T, [key: string]: any; }): AsyncSpy<T> {
+export function createAsyncSpy<T>(ObjectClass: { new (...args: any[]): T, [key: string]: any; },
+                                  providedPromiseMethodNames?:string[]): AsyncSpy<T> {
   const proto = ObjectClass.prototype;
   const methodNames = getAllMethodNames(proto); 
   
@@ -16,10 +17,14 @@ export function createAsyncSpy<T>(ObjectClass: { new (...args: any[]): T, [key: 
   methodNames.forEach((methodName) => {
     let returnTypeClass = Reflect.getMetadata('design:returntype', proto, methodName);
     
-    if (returnTypeClass === Observable) {
-      asyncSpy[methodName] = createObservableSpyFunction(methodName);
-    } else if (returnTypeClass === Promise) {
+    if ((providedPromiseMethodNames &&
+         providedPromiseMethodNames.indexOf(methodName) !== -1) ||
+        returnTypeClass === Promise) {
+      
       asyncSpy[methodName] = createPromiseSpyFunction(methodName);
+
+    }else if (returnTypeClass === Observable) {
+      asyncSpy[methodName] = createObservableSpyFunction(methodName);
     } else {
       asyncSpy[methodName] = jasmine.createSpy(methodName);
     }

@@ -16,6 +16,10 @@ export class FakeClass {
     return Promise.resolve();
   }
 
+  providedPromiseMethod(): Promise<any> {
+    return Promise.resolve();
+  }
+
   @AsyncSpyable()
   observableMethod(): Observable<any> {
     return Observable.of();

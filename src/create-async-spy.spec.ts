@@ -37,9 +37,9 @@ describe('createAsyncSpy', () => {
     });
 
     describe('PROMISES', () => {
-      When((done) => {
+      When((done) => { 
 
-        fakeClassSpy.promiseMethod()
+        fakeClassSpy.promiseMethod() 
           .then(result => {
             actualResult = result;
             done();
@@ -68,6 +68,30 @@ describe('createAsyncSpy', () => {
         });
       });
 
+    });
+
+    describe('should be able to deal with provided promises list', () => {
+
+      Given(() => {
+        fakeClassSpy = createAsyncSpy(FakeClass, ['providedPromiseMethod']);
+        fakeClassSpy.providedPromiseMethod.and.resolveWith(fakeValue);
+      });
+
+      When((done) => {
+
+        fakeClassSpy.providedPromiseMethod()
+          .then(result => { 
+            actualResult = result;
+            done();
+          })
+          .catch(error => {
+            actualRejection = error;
+            done()
+          })
+      });
+      Then(() => {
+        expect(actualResult).toBe(fakeValue);
+      });
     });
 
     describe('should be able to return fake Observable values', () => {
