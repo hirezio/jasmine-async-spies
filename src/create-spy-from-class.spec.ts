@@ -1,28 +1,29 @@
 import { FakeChildClass, FakeClass } from './fake-classes-to-test';
 
-import { AsyncSpy } from "./async-spy-types";
 import { Observable } from 'rxjs/Observable';
-import { createAsyncSpy } from './create-async-spy';
+import { Spy } from "./spy-types";
+import { createSpyFromClass } from './create-spy-from-class';
 
-let fakeClassSpy: AsyncSpy<FakeClass>;
-let fakeChildClassSpy: AsyncSpy<FakeChildClass>;
+let fakeClassSpy: Spy<FakeClass>;
+let fakeChildClassSpy: Spy<FakeChildClass>;
 let fakeValue: any;
 let actualResult: any;
 let actualRejection: any;
 
-describe('createAsyncSpy', () => {
+describe('createSpyFromClass', () => {
   Given(() => {
     fakeValue = 'BOOM!';
     actualResult = null;
+    actualRejection = null;
   });
   
   describe('FakeClass', () => {
 
     Given(() => {
-      fakeClassSpy = createAsyncSpy(FakeClass);
+      fakeClassSpy = createSpyFromClass(FakeClass);
     });
 
-    describe('should be able to return fake sync values', () => {
+    describe('fake sync values', () => {
       Given(() => {
         fakeClassSpy.syncMethod.and.returnValue(fakeValue);
       });
@@ -36,7 +37,7 @@ describe('createAsyncSpy', () => {
       });
     });
 
-    describe('PROMISES', () => {
+    describe('Promises Method', () => {
       When((done) => { 
 
         fakeClassSpy.promiseMethod() 
@@ -70,10 +71,10 @@ describe('createAsyncSpy', () => {
 
     });
 
-    describe('should be able to deal with provided promises list', () => {
+    describe('Provided promises list', () => {
 
       Given(() => {
-        fakeClassSpy = createAsyncSpy(FakeClass, ['providedPromiseMethod']);
+        fakeClassSpy = createSpyFromClass(FakeClass, ['providedPromiseMethod']);
         fakeClassSpy.providedPromiseMethod.and.resolveWith(fakeValue);
       });
 
@@ -94,7 +95,7 @@ describe('createAsyncSpy', () => {
       });
     });
 
-    describe('should be able to return fake Observable values', () => {
+    describe('Observable Method', () => {
       Given(() => {
         fakeClassSpy.observableMethod.and.nextWith(fakeValue);
       });
@@ -109,13 +110,30 @@ describe('createAsyncSpy', () => {
         expect(actualResult).toBe(fakeValue);
       });
     });
+
+    describe('Provided observables list', () => {
+
+      Given(() => {
+        fakeClassSpy = createSpyFromClass(FakeClass, null, ['providedObservableMethod']);
+        fakeClassSpy.providedObservableMethod.and.nextWith(fakeValue);
+      });
+      When(() => {
+        fakeClassSpy.providedObservableMethod()
+          .subscribe(result => actualResult = result)
+          .unsubscribe();
+      });
+      Then(() => {
+        expect(actualResult).toBe(fakeValue);
+      });
+    });
+
   });
 
-  describe('should be able to handle child class', () => {
+  describe('Fake Child Class', () => {
     Given(() => {
-      fakeChildClassSpy = createAsyncSpy(FakeChildClass);
+      fakeChildClassSpy = createSpyFromClass(FakeChildClass);
     });
-    describe('should be able to return fake Observable values', () => {
+    describe('Observable method', () => {
       Given(() => {
         fakeChildClassSpy.anotherObservableMethod.and.nextWith(fakeValue);
       });
@@ -131,7 +149,7 @@ describe('createAsyncSpy', () => {
       });
     });
 
-    describe('should handle parent methods', () => {
+    describe('parent methods', () => {
       Given(() => {
         fakeChildClassSpy.observableMethod.and.nextWith(fakeValue);
       });

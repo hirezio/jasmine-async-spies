@@ -1,3 +1,3 @@
-export * from './async-spy-types';
+export * from './spy-types';
 export { AsyncSpyable } from './async-spyable-decorator';
-export { createAsyncSpy } from './create-async-spy';
+export { createSpyFromClass } from './create-spy-from-class';

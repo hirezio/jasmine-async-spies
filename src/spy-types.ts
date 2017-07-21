@@ -1,11 +1,17 @@
 import 'jasmine';
 
-export type AsyncSpy<T> = T & {
+/**
+ * The Spy Object type
+ */
+
+export type Spy<T> = T & {
   [k in keyof T]: AsyncSpyFunction;
 }
 
-// In Jasmine, Spy is a function and SpyObj is an Object
-// We decided to call the Objects "Spies", and functions - "SpyFunctions"
+/**
+ * Originally in Jasmine, Spy is a function and SpyObj is an Object
+ * But we decided to use "Spy" for objects, and "SpyFunction" to functions.
+ */
 export interface AsyncSpyFunction extends jasmine.Spy {
   (...params: any[]): any;
   and: AsyncSpyFunctionAnd

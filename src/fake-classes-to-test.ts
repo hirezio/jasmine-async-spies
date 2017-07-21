@@ -24,6 +24,10 @@ export class FakeClass {
   observableMethod(): Observable<any> {
     return Observable.of();
   }
+
+  providedObservableMethod(): Observable<any> {
+    return Observable.of();
+  }
 };
 
 
